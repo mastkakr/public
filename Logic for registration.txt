@@ -1,0 +1,220 @@
+Code Structure for Customer registration
+
+Details to get from Customer in the first step:
+
+email address
+password
+phone number
+submit
+
+
+if (isset($_POST['submit_step1'])) //Form Submission Check: This code checks whether the form with name 'submit_step1 has submitted
+   {
+       require_once('__LIB__/secure_data.php'); //Include Secure Data Class: This scripts includes a secure data handling class
+         if (class_exists('SECURE_INPUT_DATA_AVAILABLE')) //it checks if the class 'SECURE_INPUT_DATA_AVAILABLE exists.
+             {
+
+                $obj_secure_data = new SECURE_INPUT_DATA; //If the class exists, an instance of the class 'SECURE_INPUT_DATA' is created.
+
+
+              // get personal details from the customers
+ 
+
+              $email             =  $obj_secure_data->SECURE_DATA_ENTER($_POST['email']);  //The script then uses this instance to sanitize and secure
+              $password          =  $obj_secure_data->SECURE_DATA_ENTER($_POST['password']);   // user input values received via the '$_POST' array              
+              $mobile_number     =  $obj_secure_data->SECURE_DATA_ENTER($_POST['mobile']);   //using the 'SECURE_DATA_ENTER' method
+
+
+              // insert values to sessions 
+       
+          $_SESSION['email'] = $email;            //Storing Data in Sessions: The sanitized values are stored in session variables '$_SESSION['email']'
+          $_SESSION['password'] = $password;
+          $_SESSION['mobile_number'] = $mobile_number;
+
+          $_SESSION['step1']=true;
+
+          $destURL = "register2.php";       //The script redirects the user to another page
+          header("Location: $destURL");
+          
+
+           }  // end of SECURE_INPUT_DATA_AVAILABLE class exists
+
+
+         }  // end of submit_step1
+
+
+?>
+
+
+
+Register 2 Logic
+
+First Name
+Last Name
+Date of Birth
+
+
+if (isset($_POST['submit_step2'])) //Form Submission Check: This code checks whether the form with name 'submit_step1 has submitted
+   {
+       require_once('__LIB__/secure_data.php'); //Include Secure Data Class: This scripts includes a secure data handling class
+         if (class_exists('SECURE_INPUT_DATA_AVAILABLE')) //it checks if the class 'SECURE_INPUT_DATA_AVAILABLE exists.
+             {
+
+                $obj_secure_data = new SECURE_INPUT_DATA; //If the class exists, an instance of the class 'SECURE_INPUT_DATA' is created.
+
+
+              // get personal details from the customers
+ 
+
+              $first_name             =  $obj_secure_data->SECURE_DATA_ENTER($_POST['first_name']);  //The script then uses this instance to sanitize and secure
+              $last_name          =  $obj_secure_data->SECURE_DATA_ENTER($_POST['last_name']);   // user input values received via the '$_POST' array              
+              $dob     =  $obj_secure_data->SECURE_DATA_ENTER($_POST['dob']);   //using the 'SECURE_DATA_ENTER' method
+
+
+              // insert values to sessions 
+       
+          $_SESSION['first_name'] = $email;            //Storing Data in Sessions: The sanitized values are stored in session variables '$_SESSION['email']'
+          $_SESSION['last_name'] = $last_name;
+          $_SESSION['dob'] = $dob;
+
+          $_SESSION['step2']=true;
+
+          $destURL = "register3.php";       //The script redirects the user to another page
+          header("Location: $destURL");
+          
+
+           }  // end of SECURE_INPUT_DATA_AVAILABLE class exists
+
+
+         }  // end of submit_step1
+
+
+?>
+
+Register 3
+
+Address
+City
+State
+Zipcode
+if (isset($_POST['submit_step2'])) //Form Submission Check: This code checks whether the form with name 'submit_step1 has submitted
+   {
+       require_once('__LIB__/secure_data.php'); //Include Secure Data Class: This scripts includes a secure data handling class
+         if (class_exists('SECURE_INPUT_DATA_AVAILABLE')) //it checks if the class 'SECURE_INPUT_DATA_AVAILABLE exists.
+             {
+
+                $obj_secure_data = new SECURE_INPUT_DATA; //If the class exists, an instance of the class 'SECURE_INPUT_DATA' is created.
+
+
+              // get personal details from the customers
+ 
+
+              $add            =  $obj_secure_data->SECURE_DATA_ENTER($_POST['add']);  //The script then uses this instance to sanitize and secure
+              $city          =  $obj_secure_data->SECURE_DATA_ENTER($_POST['city']);   // user input values received via the '$_POST' array              
+              $stat    =  $obj_secure_data->SECURE_DATA_ENTER($_POST['stat']);
+              $zipcode = $obj_secure_data->SECURE_DATA_ENTER($_POST['zip'];   //using the 'SECURE_DATA_ENTER' method
+
+
+              // insert values to sessions 
+       
+          $_SESSION['add'] = $add;            //Storing Data in Sessions: The sanitized values are stored in session variables '$_SESSION['email']'
+          $_SESSION['city'] = $city;
+          $_SESSION['stat'] = $stat;
+          $_SESSION['zip'] = $zip;
+
+          $_SESSION['step3']=true;
+
+          $destURL = "register4.php";       //The script redirects the user to another page
+          header("Location: $destURL");
+          
+
+           }  // end of SECURE_INPUT_DATA_AVAILABLE class exists
+
+
+         }  // end of submit_step1
+
+
+?>
+
+<?php
+session_start(); // Start the session
+
+// Redirect if required session variables are not set
+if (!isset($_SESSION['step1']) || !isset($_SESSION['step2']) || !isset($_SESSION['step3'])) {
+    header('Location: page-register.php');
+    exit; // Terminate the script
+}
+
+if (isset($_POST['submit_end'])) {
+    require_once('__LIB__/secure_data.php');
+
+    if (class_exists('SECURE_INPUT_DATA_AVAILABLE')) {
+        $obj_secure_data = new SECURE_INPUT_DATA;
+
+        // Get personal details from user
+        $first_name = $_SESSION['first_name'];
+        $last_name = $_SESSION['last_name'];
+        $dob = $_SESSION['dob'];
+        $mobile_number = $_SESSION['mobile_number'];
+        $city = $_SESSION['city'];
+        $add = $_SESSION['add'];
+        $zip = $_SESSION['zip'];
+        $email = $_SESSION['email'];
+        $password = $_SESSION['password'];
+        $ip_instant_register = $_SERVER['REMOTE_ADDR'];
+        $currentDateTime = date("Y-m-d H:i:s");
+
+        // Generate random pin and account number
+        $length_pin = 4;
+        $pin = substr(str_shuffle("0123456789"), 0, $length_pin);
+        $length_account = 10;
+        $account_number = substr(str_shuffle("0123456789"), 0, $length_account);
+
+        // ... (validation for identity_back image)
+        // Process image upload and save to server directory
+
+        // Specify the directory where you want to store the uploaded images
+        $uploadDirectory = 'uploads/';
+
+        // Create a unique name for the uploaded image
+        $uniqueFileName = uniqid() . '_' . $identity_back_name;
+
+        // Move the uploaded image to the specified directory
+        if (move_uploaded_file($identity_back_tmp_name, $uploadDirectory . $uniqueFileName)) {
+            echo 'Image uploaded successfully.';
+        } else {
+            echo 'Error uploading image.';
+        }
+
+        // Insert data into the database
+        require_once('__SRC__/connect.php');
+
+        if (class_exists('DATABASE_CONNECT')) {
+            $obj_conn = new DATABASE_CONNECT;
+            $conn = new mysqli($obj_conn->connect[0], $obj_conn->connect[1], $obj_conn->connect[2], $obj_conn->connect[3]);
+
+            if ($conn->connect_error) {
+                die("Cannot connect: " . $conn->connect_error);
+            } else {
+                $sql = "INSERT INTO customers (firstname, lastname, dob, mobile_number, city, address, zip, identity_back_data, email, password, pin, account_number, account_type, instant_register, ip_instant_register)
+                        VALUES ('$first_name', '$last_name', '$dob', '$mobile_number', '$city', '$add', '$zip', '$uniqueFileName', '$email', '$password', '$pin', '$account_number', 'block', NOW(), '$ip_instant_register')";
+
+                $sql2 = "INSERT INTO notifications (email, lastname, firstname, title, message)
+                         VALUES ('$email', '$last_name', '$first_name', 'Welcome', 'Welcome to First Nation Bank');
+                         INSERT INTO notifications (email, lastname, firstname, title, message)
+                         VALUES ('$email', '$last_name', '$first_name', 'Balance', 'Your balance is 0.00 Dollar');
+                         INSERT INTO notifications (email, lastname, firstname, title, message)
+                         VALUES ('$email', '$last_name', '$first_name', 'Account', 'Your account is activated')";
+
+                if ($conn->query($sql) && $conn->multi_query($sql2)) {
+                    echo "Data inserted successfully.";
+                } else {
+                    echo "Error inserting data: " . $conn->error;
+                }
+
+                $conn->close();
+            }
+        }
+    }
+}
+?>
